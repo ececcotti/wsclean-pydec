@@ -10,7 +10,8 @@ def deconvolve(residual, model, psf, meta):
     npol=residual.shape[1]
     height=residual.shape[2]
     width=residual.shape[3]
-    print("Starting Python deconvolve() function for "+str(width) + " x " + str(height) + " x " + str(npol) + " x " + str(nchan) + " dataset")
+    print("Starting Python deconvolve() function for "+str(width) + " x " + str(height) \
+          + " x " + str(npol) + " x " + str(nchan) + " dataset")
     
     # residual and model are a numpy arrays with dimensions nchan x npol x height x width
     # psf is a numpy arrays with dimensions nchan x height x width
@@ -39,16 +40,20 @@ def deconvolve(residual, model, psf, meta):
     # find the largest peak
     peak_index = numpy.unravel_index(numpy.argmax(residual), residual.shape)
     peak_value = residual[peak_index]
+    print peak_value
+    print peak_index
     
     mgain_threshold = peak_value * (1.0-meta.mgain)
     first_threshold = max(meta.major_iter_threshold, meta.final_threshold, mgain_threshold)
     
-    print("Starting iteration " + str(meta.iteration_number) + ", peak=" + str(peak_value) + ", first threshold=" + str(first_threshold))
+    print("Starting iteration " + str(meta.iteration_number) + ", peak=" + str(peak_value) \
+          + ", first threshold=" + str(first_threshold))
     while peak_value > first_threshold and meta.iteration_number < meta.max_iterations:
     
         model[peak_index] += peak_value
 	
         psf_shift = (peak_index[2]+height//2, peak_index[3]+width//2)
+        print psf_shift
         # In Python 3, roll can be applied on both axes at once, but on Dawn that results in an error
         residual = residual - peak_value * numpy.roll( numpy.roll( psf, psf_shift[0], axis=1 ) , psf_shift[1], axis=2 )
 
