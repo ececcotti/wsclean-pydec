@@ -1,0 +1,8 @@
+msin = /data/users/lofareor/emilio/wsclean-pydec/L246297_SAP000_SB087_uv_003_R.MS
+msin.datacolumn = CORRECTED_DATA
+
+msout = "/data/users/lofareor/emilio/wsclean-pydec/sim_rotate.MS"
+
+steps = [phaseshift]
+
+phaseshift.phasecenter = [3h00m00.0s, 80d00m00s] 

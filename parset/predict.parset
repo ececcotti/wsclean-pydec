@@ -1,0 +1,9 @@
+msin = /data/users/lofareor/emilio/wsclean-pydec/sim_rotate.MS
+msin.datacolumn = DATA
+
+msout = "/data/users/lofareor/emilio/wsclean-pydec/sim_field1.MS"
+msout.datacolumn = DATA
+
+steps = [predict]
+
+predict.sourcedb = /data/users/lofareor/emilio/wsclean-pydec/model/field1.sdb

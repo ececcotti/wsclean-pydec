@@ -1,0 +1,8 @@
+# MS files
+*.MS
+
+# fits files
+*.fits
+
+# tmp files
+*.tmp

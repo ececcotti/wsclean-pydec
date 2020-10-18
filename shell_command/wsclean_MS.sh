@@ -1,0 +1,1 @@
+wsclean -channels-out 3 -join-channels -pol i -size 1024 1024 -scale 0.8asec -auto-mask 3 -auto-threshold 0.3 -niter 100000 -multiscale -mgain 0.8 -weight uniform -data-column DATA -name sim_field1-MS sim_field1.MS
