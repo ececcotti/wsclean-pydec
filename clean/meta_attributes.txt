@@ -1,0 +1,9 @@
+channels
+final_threshold
+gain
+iteration_number
+major_iter_threshold
+max_iterations
+mgain
+spectral_fitter
+square_joined_channels
