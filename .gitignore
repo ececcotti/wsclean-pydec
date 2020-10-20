@@ -6,3 +6,7 @@
 
 # tmp files
 *.tmp
+
+# sourcedb files
+*.sdb
+*.sourcedb
