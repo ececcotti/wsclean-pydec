@@ -11,7 +11,7 @@ wsclean -size 1024 1024 -scale 1amin -niter 1000000 -mgain 0.8 -auto-threshold 5
 ```
 
 ## Python scripts
-In the `python_script` direcory there are useful scripts (and codes), e.g. to handle fits files.
+In the `python_script` directory there are useful scripts (and codes), e.g., to handle fits files.
 
 -  `fix_source_list.py`: it adds a progressive number after the source name if there are more than one source with the same name.
 
