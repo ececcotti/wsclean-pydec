@@ -38,7 +38,7 @@ def deconvolve(residual, model, psf, meta):
 		residual = residual - peak_val * meta.gain * np.roll(np.roll(psf, psf_shift[0], axis=1), psf_shift[1], axis=2)
 		
 		# update model and iteration number
-		model[peak_idx] += peak_val
+		model[peak_idx] += peak_val*meta.gain
 		meta.iteration_number += 1
 		
 	print("Stopped after iteration " + str(meta.iteration_number) + ", peak=" + str(peak_val))
