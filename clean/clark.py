@@ -15,7 +15,7 @@ def select_psf(psf):
 		pos_psf = main_idx[1] + i
 		pos_notZero = w_notZero_peak + i
 		if pos_psf != w_notZero[pos_notZero]:
-			maxlobe_val = max(psf_row[w_notZero[pos_notZero]:])
+			maxlobe_val = np.max(psf_row[w_notZero[pos_notZero]:])
 			maxlobe_idx = np.where(psf_row == maxlobe_val)[0][0]
 			break
 	
@@ -27,8 +27,9 @@ def select_psf(psf):
 		if psf_row[pixel0] == 0: break
 		
 	pixel_i = int(2*psf_row[1] - pixel0)
-	pixel_f = int(pixel_0 + 1)
-	sub_psf = psf[pixel_i:pixel_f, pixel_i:pixel_f]
+	pixel_f = int(pixel0 + 1)
+	sub_psf = np.zeros(psf.shape)
+	sub_psf[pixel_i:pixel_f, pixel_i:pixel_f] = psf[pixel_i:pixel_f, pixel_i:pixel_f]
 	return sub_psf, R_psf
 
 def deconvolve(residual, model, psf, meta):
@@ -50,9 +51,10 @@ def deconvolve(residual, model, psf, meta):
 		
 	# select portion of psf containing only main + maximum exterior sidelobe
 	sub_psf, R_psf = select_psf(psf[0,:,:])
+	sampling = np.fft.fft2(psf, axes=(1,2))
 	
 	# MAJOR CYCLE
-	while meta.iteration_number <= meta.max_iterations or max(residual) > meta.final_threshold:
+	while meta.iteration_number <= meta.max_iterations and np.max(residual) >= meta.final_threshold:
 		if meta.iteration_number%(meta.max_iterations/10.) == 0:
 			print("-- Starting major iteration " + str(meta.iteration_number))
 		
@@ -62,32 +64,38 @@ def deconvolve(residual, model, psf, meta):
 		
 		# set the threshold for minor cycle
 		threshold = peak_val * R_psf
-		
+
 		# MINOR CYCLE
 		minor_iteration = 0
 		residual_minor = residual
-		while peak_val >= threshold:
-			if meta.iteration_number%(meta.max_iterations/10.) == 0:
+		model_partial = np.zeros(model.shape)
+		while peak_val >= threshold and peak_val >= meta.final_threshold:
+			if minor_iteration%1000. == 0:
 				print("Starting minor iteration " + str(minor_iteration) + ", peak=" + str(peak_val) \
-					+ ", threshold=" + str(threshold))
+					+ ", threshold=" + str(max(threshold, meta.final_threshold)))
 
 			# shift the sub-psf to the peak position and subtract (new residual)
 			psf_shift = (peak_idx[2] + height//2, peak_idx[3] + width//2)
-			residual_minor = residual_minor - peak_val * meta.gain * np.roll(np.roll(sub_psf, psf_shift[0], axis=1), psf_shift[1], axis=2)
+			residual_minor -= peak_val * meta.gain * np.roll(np.roll(sub_psf, psf_shift[0], axis=0), psf_shift[1], axis=1)
 		
-			# update partial model and iteration number
+			# update partial model and minor iteration number
 			model_partial[peak_idx] += peak_val*meta.gain
 			minor_iteration += 1
 			
 			# new peak value
-			peak_idx =  np.unravel_index(np.argmax(residual_minor), residual_minor.shape)
+			peak_idx = np.unravel_index(np.argmax(residual_minor), residual_minor.shape)
 			peak_val = residual_minor[peak_idx]
 		
-		print("Minor cycles stopped after iteration " + str(minor_iteration) + ", peak=" + str(peak_val))
+		print("Minor cycle stopped after iteration " + str(minor_iteration) + ", peak=" + str(peak_val))
 		
-		vis_model_partial
+		# cleaning in gridded visibilities
+		vis_model_partial = np.fft.fft2(model_partial)
+		residual[0,0,:,:] -= np.abs(np.fft.ifft2(sampling[0,:,:] * vis_model_partial[0,0,:,:])) / height / width
 		
-
+		# update model and major iteration number
+		model += model_partial
+		meta.iteration_number += 1
+		
 	# fill dictionary for wsclean
 	result = dict()
 	result['residual'] = residual
