@@ -63,11 +63,12 @@ def deconvolve(residual, model, psf, meta):
 		peak_val = residual[peak_idx]
 		
 		# set the threshold for minor cycle
-		threshold = peak_val * R_psf
+		threshold = R_psf* peak_val
 
 		# MINOR CYCLE
 		minor_iteration = 0
 		residual_minor = residual
+		residual_minor[residual_minor < threshold] = 0
 		model_partial = np.zeros(model.shape)
 		while peak_val >= threshold and peak_val >= meta.final_threshold:
 			if minor_iteration%1000. == 0:
