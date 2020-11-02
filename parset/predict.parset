@@ -6,4 +6,4 @@ msout.datacolumn = DATA
 
 steps = [predict]
 
-predict.sourcedb = /data/users/lofareor/emilio/wsclean-pydec/model/field1.sdb
+predict.sourcedb = /data/users/lofareor/emilio/wsclean-pydec/models/field1.sdb

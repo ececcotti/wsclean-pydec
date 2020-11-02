@@ -55,15 +55,14 @@ def deconvolve(residual, model, psf, meta):
 	
 	# MAJOR CYCLE
 	while meta.iteration_number <= meta.max_iterations and np.max(residual) >= meta.final_threshold:
-		if meta.iteration_number%(meta.max_iterations/10.) == 0:
-			print("-- Starting major iteration " + str(meta.iteration_number))
+		print("-- Starting major iteration " + str(meta.iteration_number))
 		
 		# find strength and position of the peak
 		peak_idx = np.unravel_index(np.argmax(residual), residual.shape)
 		peak_val = residual[peak_idx]
 		
 		# set the threshold for minor cycle
-		threshold = R_psf* peak_val
+		threshold = R_psf * peak_val
 
 		# MINOR CYCLE
 		minor_iteration = 0
