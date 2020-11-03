@@ -66,8 +66,7 @@ def deconvolve(residual, model, psf, meta):
 
 		# MINOR CYCLE
 		minor_iteration = 0
-		residual_minor = residual
-		residual_minor[residual_minor < threshold] = 0
+		residual_minor = np.copy(residual)
 		model_partial = np.zeros(model.shape)
 		while peak_val >= threshold and peak_val >= meta.final_threshold:
 			if minor_iteration%1000. == 0:
@@ -90,6 +89,9 @@ def deconvolve(residual, model, psf, meta):
 		
 		# cleaning in gridded visibilities
 		vis_model_partial = np.fft.fft2(model_partial)
+		#vis_residual = np.fft.fft2(residual, axes=(2,3))
+		#vis_residual -= sampling[0,:,:] * vis_model_partial[0,0,:,:]
+		#residual[0,0,:,:] = np.abs(np.fft.ifft2(vis_residual) / height / width)
 		residual[0,0,:,:] -= np.abs(np.fft.ifft2(sampling[0,:,:] * vis_model_partial[0,0,:,:])) / height / width
 		
 		# update model and major iteration number
@@ -101,7 +103,7 @@ def deconvolve(residual, model, psf, meta):
 	result['residual'] = residual
 	result['model'] = model
 	result['level'] = peak_val
-	result['continue'] = peak_val > meta.final_threshold and meta.iteration_number < meta.max_iterations
+	result['continue'] = False #peak_val > meta.final_threshold and meta.iteration_number < meta.max_iterations
     
 	print("Finished deconvolve()")
 	return result
