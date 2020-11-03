@@ -17,7 +17,7 @@ In the `python_script` directory there are useful scripts (and codes), e.g., to 
 
 -  `genBlank.py`: it takes in input a template fits file to generate a blank fits (i.e. setting all pixels to zero) with the same template features.
 
-- `gen_simMS.py`: it generates an MS file with visibilities simulated from a sky model, using the `predict` step of the __[DPPP](https://www.astron.nl/citt/DP3/#)__ pipeline. A (white) noise, drawn by a complex Gaussian distribution $\mathcal{CN}(0, \sigma)$, is then added to visibilities. 
+- `gen_simMS.py`: it generates an MS file with visibilities simulated from a sky model, using the `predict` step of the __[DPPP](https://www.astron.nl/citt/DP3/#)__ pipeline. A (white) noise, drawn by a complex Gaussian distribution CN(0,&sigma), is then added to visibilities. 
 
 -  `plot_fits.py`: it generates plots of a fits image using WCS coordinates. The output image can be saved in pdf or png format. Other plotting
 options can be listed with `python plot_fits.py -h`.
