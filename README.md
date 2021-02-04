@@ -1,5 +1,5 @@
 # wsclean-pydec
-A Python deconvolution support has been added, but not yet released, by André Offrina to __[WSClean](https://gitlab.com/aroffringa/wsclean)__, which can now execute a python script during each major deconvolution iteration.
+A Python deconvolution support has been added, but not yet released, by André Offringa to __[WSClean](https://gitlab.com/aroffringa/wsclean)__, which can now execute a python script during each major deconvolution iteration.
 
 ## Usage
 The Python support in WSClean is called by the parameter `-python-deconvolution <filename>`, 
